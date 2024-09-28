@@ -58,7 +58,18 @@ namespace utl
           _tokens.push_back(lex_heading());
           continue;
         }
-        else 
+        else if (_current_char == '*' && peek() == '*' && !isspace(peek(1)) && peek() != '\0')
+        {
+          advance();  // Skip the second '*'
+          advance();  // Move to the next character
+          _tokens.push_back(Token(Token_type::BOLD, "**"));
+        }
+        else if (_current_char == '*' && !isspace(peek()) && peek() != '*' && peek() != '\0')
+        {
+          advance();  // Move to the next character
+          _tokens.push_back(Token(Token_type::ITALIC, "*"));
+        }
+        else
         {
           _tokens.push_back(lex_text());
         }
@@ -90,7 +101,10 @@ namespace utl
       }
     }
 
+    bool is_special_char(char c) const { return c == '*' || c == '_'; }
+
     char peek() const { return (_pos < _input.size()) ? _input[_pos] : '\0'; }
+    char peek(size_t n) const { return (_pos + n < _input.size()) ? _input[_pos + n] : '\0'; }
 
     Token lex_heading()
     {
@@ -139,6 +153,21 @@ namespace utl
       // Collect the text content
       while (_current_char != '\n' && _current_char != '\0' && !isspace(_current_char))
       {
+        // Handling bold token
+        if (_current_char == '*' && peek() == '*' && isspace(peek(1)) && peek() != '\0')
+        {
+          advance();  // Skip the second '*'
+          advance();  // Move to the next character
+          _tokens.push_back(Token(Token_type::BOLD, "**"));
+          return Token(Token_type::TEXT, text);
+        }
+        // Handling italic token
+        else if (_current_char == '*' && isspace(peek()) && peek() != '*' && peek() != '\0')
+        {
+          advance();  // Move to the next character
+          _tokens.push_back(Token(Token_type::ITALIC, "*"));
+          return Token(Token_type::TEXT, text);
+        }
         text += _current_char;
         advance();
       }
