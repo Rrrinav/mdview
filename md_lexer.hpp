@@ -43,6 +43,8 @@ namespace utl
       advance();
       _at_line_start = true;  // We assume lexer starts at the beginning of the first line.
     }
+    
+    ~Md_lexer() = default;
 
     std::vector<Token> tokenize()
     {
