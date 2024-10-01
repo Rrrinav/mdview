@@ -92,7 +92,7 @@ namespace utl
         advance();
       }
 
-      Node paragraph_node(Node_type::PARAGRAPH, "");
+      Node paragraph_node(Node_type::PARAGRAPH, paragraph_content);
       return paragraph_node;
     }
   };

@@ -43,6 +43,10 @@ std::string type_to_string(utl::Token_type type)
       return "ITALIC";
     case utl::Token_type::TEXT:
       return "TEXT";
+    case utl::Token_type::SPACE:
+      return "SPACE";
+    case utl::Token_type::NEWLINE:
+      return "NEW LINE";
     case utl::Token_type::UNKNOWN:
       return "UNKNOWN";
     case utl::Token_type::END_OF_FILE:

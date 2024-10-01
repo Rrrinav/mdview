@@ -2,6 +2,7 @@
 #pragma once
 
 #include <cctype>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -16,7 +17,9 @@ namespace utl
     BOLD,
     ITALIC,
     TEXT,
+    SPACE,
     UNKNOWN,
+    NEWLINE,
     END_OF_FILE
   };
 
@@ -43,16 +46,23 @@ namespace utl
       advance();
       _at_line_start = true;  // We assume lexer starts at the beginning of the first line.
     }
-    
+
     ~Md_lexer() = default;
 
     std::vector<Token> tokenize()
     {
       while (_current_char != '\0')
       {
-        if (isspace(_current_char))
+        if (_current_char == '\n')
         {
-          handle_whitespace();
+          _tokens.push_back(Token(Token_type::NEWLINE, "\n"));
+          advance();
+          _at_line_start = true;  // Line starts after a newline
+          continue;
+        }
+        if (isspace(_current_char) && _current_char != '\n')  // Skip handling newlines here
+        {
+          _tokens.push_back(add_whitespaces());
           continue;
         }
         else if (_current_char == '#' && _at_line_start)
@@ -92,7 +102,18 @@ namespace utl
         _current_char = '\0';  // End of file
     }
 
-    void handle_whitespace()
+    Token add_whitespaces()
+    {
+      std::string spaces = "";
+      while (_current_char != '\0' && isspace(_current_char) && _current_char != '\n')  // Stop at newline
+      {
+        spaces += _current_char;
+        advance();
+      }
+      return {Token_type::SPACE, spaces};
+    }
+
+    void skip_whitespaces()
     {
       // Skip whitespace, set _at_line_start to true after a newline
       while (_current_char != '\0' && isspace(_current_char))

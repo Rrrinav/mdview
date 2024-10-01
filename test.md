@@ -4,7 +4,7 @@ Hi, this is a parser, hello world....
 
 ## HEADING 2
 
-**BOLD-BEFORE** \**No-bold-before*ITALIC _ITALIC_
+**BOLD-BEFORE**  **No-bold-before *ITALIC _ITALIC_
 
 ### HEADING 3
 
